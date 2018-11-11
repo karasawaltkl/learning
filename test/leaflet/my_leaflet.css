@@ -1,0 +1,13 @@
+#wrapper {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+#mapid {
+	flex: 1;
+	width: 100%;
+}
+#menu {
+	height: 60px;
+	width: 100%;
+}
