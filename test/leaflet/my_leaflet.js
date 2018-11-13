@@ -7,12 +7,22 @@ input_file.addEventListener("change", inputEventLisner);
 
 var mymap = L.map('mapid').setView([35.73079573810729,139.74938308635552], 14);
 
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery ? <a href="http://mapbox.com">Mapbox</a>',
-    maxZoom: 18,
-    id: 'mapbox.streets',
-    accessToken: 'xxxx'
-}).addTo(mymap);
+//MapBoxレイヤー追加
+//L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+//    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery ? <a href="http://mapbox.com">Mapbox</a>',
+//    maxZoom: 18,
+//    id: 'mapbox.streets',
+//    accessToken: 'xxxx'
+//}).addTo(mymap);
+
+//OSMレイヤー追加
+L.tileLayer(
+	'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+	{
+		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
+		maxZoom: 18
+	}
+).addTo(mymap);
 
 var requestURL = "";
 function drawTracking(){
@@ -40,16 +50,21 @@ function drawTracking(){
 function createTrackMatchingURL()
 {
 	var base_url = "https://router.project-osrm.org/match/v1/driving/";
+	//var base_url = "https://api.mapbox.com/matching/v5/mapbox/driving/";
 	var geojson_opt = "?geometries=geojson";
+	var access_token = "&access_token=xxxx"
 	requestURL = base_url;
 	for(var i=0; i<input_points.length; i++){
 		var lonlat = input_points[i][0] + "," + input_points[i][1];
 		if(i!=input_points.length-1){
-			lonlat = lonlat + ";"
+			lonlat = lonlat + ";";
 		}
 		requestURL = requestURL + lonlat;
 	}
 	requestURL = requestURL + geojson_opt;
+	
+	//Mapbox利用時
+	//requestURL = requestURL + access_token;
 }
 
 function drawGeoJson(){
@@ -70,19 +85,19 @@ function getLineStringColor(){
 	var color;
 	switch(count % 5){
 		case 0:
-			color = "#ff7800";
+			color = "#00ff00";
 			break;
 		case 1:
-			color = "#00ff78";
+			color = "#ff00ff";
 			break;
 		case 2:
-			color = "#ff0078";
+			color = "#00ffff";
 			break;
 		case 3:
-			color = "#7800ff";
+			color = "#ffff00";
 			break;
 		case 4:
-			color = "#00ff78";
+			color = "#9999dd";
 			break;
 	}
 	count = count + 1;
@@ -97,7 +112,7 @@ function drawTracepoints(){
 			var lon = output_tracepoints[i].location[0];
 			var point_location = [ lat, lon ];
 			
-			drawCircle(point_location, '#FF0000');
+			drawCircle(point_location, '#FF0000', (i+1)+"");
 		}
 	}
 }
@@ -109,11 +124,11 @@ function drawInputPoints()
 		var lon = input_points[i][0];
 		var point_location = [ lat, lon ];
 			
-		drawCircle(point_location, '#0000FF');
+		drawCircle(point_location, '#0000FF', (i+1)+"");
 	}
 }
 
-function drawCircle(location, fill_color)
+function drawCircle(location, fill_color, label)
 {
 	var CircleMarker = L.circleMarker(location, {
 	    color: fill_color,
@@ -123,8 +138,8 @@ function drawCircle(location, fill_color)
 	    fillOpacity: 0.8,
 	})
 	
-	CircleMarker.setRadius(2);
-	CircleMarker.addTo(mymap);
+	CircleMarker.setRadius(3);
+	CircleMarker.bindPopup(label).addTo(mymap);
 }
 
 var input_points;
@@ -142,7 +157,8 @@ function inputEventLisner(e){
 			if(input_line[i].length >= 4){
 				var lon = input_elements[2];
 				var lat = input_elements[3];
-				var lonlat = [ lon, lat ];
+				var timestamp = input_elements[0];
+				var lonlat = [ lon, lat, timestamp ];
 				input_points.push(lonlat);
 			}
 		}
