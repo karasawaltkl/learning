@@ -8,8 +8,42 @@
 		<div id="wrapper">
 			<div id="menu">
 				<input type="file" id="inputfile" />
+				<input type="button" value="入力点を削除" onClick="removeInputPoint()">
+				<input type="button" value="走行軌跡を削除" onClick="removeTracking()">
+				削除する軌跡番号(0:ALL)
+				<input id="tracking_num" type="text" value="0" size="2"/>
+				URL
+				<input id="api_url" type="text" value="URLが出力されます" size="50"/>
 				<BR>
-				<input type="button" value="TrackMatching" onClick="drawTracking()">
+				<input type="button" value="走行軌跡マッチング" onClick="drawTracking()">
+				steps
+				<select id="steps">
+					<option>false</option>
+					<option>true</option>
+				</select>
+				overview
+				<select id="overview">
+					<option>simplified</option>
+					<option>full</option>
+					<option>false</option>
+				</select>
+				gaps
+				<select id="gaps">
+					<option>split</option>
+					<option>ignore</option>
+				</select>
+				tidy
+				<select id="tidy">
+					<option>false</option>
+					<option>true</option>
+				</select>
+				timestamps
+				<select id="timestamps">
+					<option>false</option>
+					<option>true</option>
+				</select>
+				radiuses(0:デフォルト)
+				<input id="radiuses" type="text" value="0" size="2"/>
 			</div>
 			<div id="mapid"></div>
 		</div>
